@@ -1182,7 +1182,7 @@ local script = G2L["19"];
 		local OldPos = Root.CFrame
 		Root.CFrame = CFrame.new(0,999999,0)
 		
-		wait(0.5)
+		wait(0.2)
 		
 		cmd.Env.connection = Maid(Humanoid.Died:Connect(function()
 			visible(cmd)
@@ -1208,7 +1208,7 @@ local script = G2L["19"];
 		else
 			cmd.Env.obj = Root:Clone()
 			cmd.Env.obj.Parent = Character
-			Root.CFrame = OldPos
+			cmd.Env.obj.CFrame = OldPos
 			return "R6 player is now invisible."
 		end
 	end)
