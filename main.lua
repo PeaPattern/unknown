@@ -474,7 +474,7 @@ local script = G2L["19"];
 	
 	local function Notify(Message)
 		StarterGui:SetCore("SendNotification", {
-			Title = "FLUXADMIN",
+			Title = "FluxAdmin",
 			Text = Message,
 			Duration = 4 + (Message:len() * 0.1)
 		})
@@ -482,7 +482,7 @@ local script = G2L["19"];
 	
 	--== UI Handler ==--
 	
-	Notify("Welcome to FLUXADMIN!!! == Created by PeaPattern")
+	Notify("Welcome to FluxAdmin :: Created by PeaPattern")
 	
 	Close.MouseButton1Down:Connect(function()
 		CommandList.Visible = false
