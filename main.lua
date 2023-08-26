@@ -788,7 +788,7 @@ local script = G2L["19"];
 	
 	AddCommand({"fling"}, "Flings the targeted user.", 1, function(msg, args, cmd)
 		local Target = GetPlayer(args[1])
-		local Length = tonumber(args[2]) or 1
+		local Length = tonumber(args[2]) or 0.7
 		if not Target then return "Target not found." end
 		
 		local tChar = Target.Character
@@ -850,21 +850,27 @@ local script = G2L["19"];
 			end
 		end
 		
+		local Add = 0
 		Connection = RunService.Heartbeat:Connect(function(step)
 			if not tRoot or not Root then endFling() end
+			Add += 25
 			Humanoid:ChangeState(16)
 			
 			for _,bp in next, Char:GetDescendants() do
 				if bp:IsA("BasePart") then
 					bp.CanCollide = false
-					bp.Velocity = Vector3.new(9e9,9e9,9e9)
-					bp.RotVelocity = Vector3.new(9e9,9e9,9e9)
+					bp.Velocity = Vector3.new(9e12,9e12,9e12)
+					bp.RotVelocity = Vector3.new(9e12,9e12,9e12)
 				end
 			end
 			
 			step = step - workspace.DistributedGameTime
-			local tPos = (tRoot.CFrame * CFrame.Angles(math.rad(-90),0,0))
-			Root.CFrame = tPos - (tRoot.Velocity * (step * 0.003))
+			local tPos = (tRoot.CFrame) * CFrame.Angles(
+				math.rad(Add*2),
+				0,
+				math.rad(Add)
+			)
+			Root.CFrame = tPos - (tRoot.Velocity * (step * 0.0003))
 		end)
 	
 		task.wait(Length)
@@ -1222,7 +1228,7 @@ local script = G2L["19"];
 		else
 			cmd.Env.obj = Root:Clone()
 			cmd.Env.obj.Parent = Character
-			Root.CFrame = OldPos
+			cmd.Env.obj.CFrame = OldPos
 			return "R6 player is now invisible."
 		end
 	end)
