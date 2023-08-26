@@ -474,7 +474,7 @@ local script = G2L["19"];
 	
 	local function Notify(Message)
 		StarterGui:SetCore("SendNotification", {
-			Title = "FluxAdmin",
+			Title = "FlexAdmin",
 			Text = Message,
 			Duration = 4 + (Message:len() * 0.1)
 		})
@@ -482,7 +482,7 @@ local script = G2L["19"];
 	
 	--== UI Handler ==--
 	
-	Notify("Welcome to FluxAdmin :: Created by PeaPattern")
+	Notify("Welcome to FlexAdmin :: Created by PeaPattern")
 	
 	Close.MouseButton1Down:Connect(function()
 		CommandList.Visible = false
@@ -685,6 +685,11 @@ local script = G2L["19"];
 			cmd.Env.Connection3:Disconnect()
 			cmd.Env.Connection3 = nil
 		end
+		
+		if cmd.Env.Connection4 then
+			cmd.Env.Connection4:Disconnect()
+			cmd.Env.Connection4 = nil
+		end
 	
 		if cmd.Env.Gravity then
 			workspace.Gravity = cmd.Env.Gravity
@@ -746,8 +751,13 @@ local script = G2L["19"];
 		
 		local Target = Root.CFrame
 		cmd.Env.Connection3 = RunService.Heartbeat:Connect(function()
+			if not Character or not Root or not Humanoid then reverseFly() end
 			Root.CFrame = CFrame.new((Target * Offset.Position), Camera.CFrame.Position + Camera.CFrame.LookVector * 50)
 			Target = Root.CFrame
+		end)
+		
+		cmd.Env.Connection4 = Humanoid.Died:Connect(function()
+			reverseFly()
 		end)
 		
 		return "Player is now flying."
@@ -1047,6 +1057,120 @@ local script = G2L["19"];
 		return "Attempting to unride."
 	end)
 	
+	AddCommand({"view"}, "Camera focuses on target.", 1, function(msg, args, cmd)
+		local Target = GetPlayer(args[1])
+		if not Target then return end
+	
+		local tChar = Target.Character
+		if not tChar then return end
+	
+		local tHum = tChar:FindFirstChildOfClass("Humanoid")
+		if not tHum then return end
+	
+		Camera.CameraSubject = tHum
+	end)
+	
+	AddCommand({"unview"}, "Reverts the view command.", 0, function(msg, args, cmd)
+		local Character = LocalPlayer.Character
+		if not Character then return end
+	
+		local Humanoid = Character:FindFirstChildOfClass("Humanoid")
+		if not Humanoid then return end
+	
+		Camera.CameraSubject = Humanoid
+	end)
+	
+	AddCommand({"noclip"}, "Allows the player to walk through objects.", 0, function(msg, args, cmd)
+		if #cmd.Env >= 1 then return end
+		local Character = LocalPlayer.Character
+		if not Character then return end
+	
+		cmd.Env.bp = {}
+		for _,v in next, Character:GetChildren() do
+			if v:IsA("BasePart") then
+				cmd.Env.bp[v] = v.CanCollide
+			end
+		end
+		cmd.Env.Noclip = Maid(RunService.Stepped:Connect(function()
+			for _,v in next, Character:GetChildren() do
+				if v:IsA("BasePart") and v.CanCollide then
+					v.CanCollide = false
+				end
+			end
+		end))
+	
+		local Humanoid = Character:FindFirstChildOfClass("Humanoid")
+		if not Humanoid then return end
+	
+		cmd.Env.Death = Maid(Humanoid.Died:Connect(function()
+			if cmd.Env.Noclip then cmd.Env.Noclip:Disconnect() cmd.Env.Noclip = nil end
+			if cmd.Env.Death then cmd.Env.Death:Disconnect() cmd.Env.Death = nil end
+		end))
+	end)
+	
+	AddCommand({"clip"}, "Reverts the noclip command.", 0, function()
+		local cmd = GetCommand("Noclip")
+		if cmd.Env.Noclip then cmd.Env.Noclip:Disconnect() cmd.Env.Noclip = nil end
+		if cmd.Env.Death then cmd.Env.Death:Disconnect() cmd.Env.Death = nil end
+	
+		local Character = LocalPlayer.Character
+		if not Character then return end
+	
+		if cmd.Env.bp then
+			for bp,cc in next, cmd.Env.bp do
+				bp.CanCollide = cc
+				cmd.Env.bp = nil
+			end
+		end
+	end)
+	
+	local function visible(cmd)
+		local env = cmd.Env
+		local con = env.connection
+		if con then
+			con:Disconnect()
+			env.connection = nil
+		end
+		local obj = env.obj
+		if obj then
+			obj:Destroy()
+			env.obj = nil
+		end
+	end
+	
+	AddCommand({"invisible", "invis"}, "Client position changes, server position does not.", 0, function(msg, args, cmd)
+		if cmd.Env.obj or cmd.Env.ghost or cmd.Env.connection or cmd.Env.connection2 then
+			visible(cmd)
+			return "Player is now visible."
+		end
+	
+		local Character = LocalPlayer.Character
+		if not Character then return "Player has no character." end
+		
+		local Root = Character:FindFirstChild("HumanoidRootPart")
+		if not Root then return "Player has no root." end
+		
+		local Humanoid = Character:FindFirstChildOfClass("Humanoid")
+		if not Humanoid then return end
+		
+		local OldPos = Root.CFrame
+		Root.CFrame = CFrame.new(0,999999,0)
+		
+		wait()
+		
+		cmd.Env.connection = Maid(Humanoid.Died:Connect(function()
+			visible(cmd)
+		end))
+		
+		cmd.Env.obj = Root:Clone()
+		cmd.Env.obj.Parent = Character
+		Root.CFrame = OldPos
+	end)
+	
+	AddCommand({"visible", "vis"}, "Reverses desync command.", 0, function()
+		visible(GetCommand("invisible"))
+	end)
+	
 	table.sort(Commands, function(a, b)
 		return a.Names[1] < b.Names[1]
 	end)
@@ -1057,6 +1181,7 @@ local script = G2L["19"];
 		Clone.cmdName.Text = cmd.Names[1]
 		Clone.Number.Text = _
 	end
+	
 end;
 task.spawn(C_19);
 
