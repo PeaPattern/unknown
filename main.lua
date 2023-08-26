@@ -1131,10 +1131,36 @@ local script = G2L["19"];
 			con:Disconnect()
 			env.connection = nil
 		end
-		local obj = env.obj
-		if obj then
-			obj:Destroy()
-			env.obj = nil
+		
+		local Character = LocalPlayer.Character
+		local Root = Character:FindFirstChild("HumanoidRootPart")
+		if not Root then return end
+		
+		local Humanoid = Character:FindFirstChildOfClass("Humanoid")
+		if not Humanoid then return end
+		
+		for _,bp in next, env.BodyParts do
+			_.Transparency = bp[1]
+			_.Material = bp[2]
+		end
+		
+		if Humanoid.RigType == Enum.HumanoidRigType.R15 then
+			local OldPos = Root.CFrame
+			Character:BreakJoints()
+			
+			local Connection
+			Connection = LocalPlayer.CharacterAdded:Connect(function(newChar)
+				Connection:Disconnect()
+				newChar:WaitForChild("HumanoidRootPart").CFrame = OldPos
+				return "R15 player is now visible."
+			end)
+		else
+			local obj = env.obj
+			if obj then
+				obj:Destroy()
+				env.obj = nil
+			end
+			return "R6 player is now visible."
 		end
 	end
 	
@@ -1156,15 +1182,35 @@ local script = G2L["19"];
 		local OldPos = Root.CFrame
 		Root.CFrame = CFrame.new(0,999999,0)
 		
-		wait()
+		wait(0.2)
 		
 		cmd.Env.connection = Maid(Humanoid.Died:Connect(function()
 			visible(cmd)
 		end))
 		
-		cmd.Env.obj = Root:Clone()
-		cmd.Env.obj.Parent = Character
-		Root.CFrame = OldPos
+		if not cmd.Env.BodyParts then
+			cmd.Env.BodyParts = {}
+		end
+		
+		for _,bp in next, Character:GetDescendants() do
+			if bp:IsA("BasePart") then
+				cmd.Env.BodyParts[bp] = {bp.Transparency, bp.Material}
+				bp.Transparency = 0.5
+				bp.Material = Enum.Material.ForceField
+			end
+		end
+		
+		if Humanoid.RigType == Enum.HumanoidRigType.R15 then
+			Root.Parent = nil
+			Root.Parent = Character
+			Root.CFrame = OldPos
+			return "R15 player is now invisible."
+		else
+			cmd.Env.obj = Root:Clone()
+			cmd.Env.obj.Parent = Character
+			Root.CFrame = OldPos
+			return "R6 player is now invisible."
+		end
 	end)
 	
 	AddCommand({"visible", "vis"}, "Reverses desync command.", 0, function()
