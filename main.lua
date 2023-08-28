@@ -420,6 +420,7 @@ local script = G2L["19"];
 	local TPService = game:GetService("TeleportService")
 	local Lighting = game:GetService("Lighting")
 	local StarterGui = game:GetService("StarterGui")
+	local HttpService = game:GetService("HttpService")
 	
 	local LocalPlayer = Players.LocalPlayer
 	local Camera = workspace.CurrentCamera
@@ -700,21 +701,6 @@ local script = G2L["19"];
 			cmd.Env.Connection4:Disconnect()
 			cmd.Env.Connection4 = nil
 		end
-	
-		if cmd.Env.Gravity then
-			workspace.Gravity = cmd.Env.Gravity
-			cmd.Env.Gravity = nil
-		end
-	
-		local Character = LocalPlayer.Character
-		local Root = Character:FindFirstChild("HumanoidRootPart")
-		if not Root then return "Player has no root." end
-	
-		local Humanoid = Character:FindFirstChildOfClass("Humanoid")
-		if not Humanoid then return "Player has no humanoid." end
-		
-		local Animate = Character:FindFirstChild("Animate")
-		if Animate then Animate.Disabled = false end
 	end
 	
 	local flySpeed = 1
@@ -725,17 +711,12 @@ local script = G2L["19"];
 	
 		local Humanoid = Character:FindFirstChildOfClass("Humanoid")
 		if not Humanoid then return "No humanoid." end
-	
-		local Animate = Character:FindFirstChild("Animate")
-		if Animate then Animate.Disabled = true end
-	
-		if not cmd.Env.Gravity then
-			cmd.Env.Gravity = workspace.Gravity
-		end
-		workspace.Gravity = 0
-	
-		for _,track in next, Humanoid:GetPlayingAnimationTracks() do
-			track:Stop()
+		
+		local Parts = {}
+		for _,v in next, Character:GetDescendants() do
+			if v:IsA("BasePart") then
+				Parts[#Parts + 1] = v
+			end
 		end
 	
 		local Offset = CFrame.new(0,0,0)
@@ -762,6 +743,10 @@ local script = G2L["19"];
 		local Target = Root.CFrame
 		cmd.Env.Connection3 = RunService.Heartbeat:Connect(function()
 			if not Character or not Root or not Humanoid then reverseFly() return "Instances missing." end
+			Humanoid:ChangeState(0)
+			for _,v in next, Parts do
+				v.Velocity, v.RotVelocity = Vector3.zero, Vector3.zero
+			end
 			Root.CFrame = CFrame.new((Target * Offset.Position), Camera.CFrame.Position + Camera.CFrame.LookVector * 50)
 			Target = Root.CFrame
 		end)
@@ -788,7 +773,7 @@ local script = G2L["19"];
 	
 	AddCommand({"fling"}, "Flings the targeted user.", 1, function(msg, args, cmd)
 		local Target = GetPlayer(args[1])
-		local Length = tonumber(args[2]) or 0.7
+		local Length = tonumber(args[2]) or 1
 		if not Target then return "Target not found." end
 		
 		local tChar = Target.Character
@@ -850,27 +835,21 @@ local script = G2L["19"];
 			end
 		end
 		
-		local Add = 0
 		Connection = RunService.Heartbeat:Connect(function(step)
 			if not tRoot or not Root then endFling() end
-			Add += 25
 			Humanoid:ChangeState(16)
 			
 			for _,bp in next, Char:GetDescendants() do
 				if bp:IsA("BasePart") then
 					bp.CanCollide = false
-					bp.Velocity = Vector3.new(9e12,9e12,9e12)
-					bp.RotVelocity = Vector3.new(9e12,9e12,9e12)
+					bp.Velocity = Vector3.new(9e9,9e9,9e9)
+					bp.RotVelocity = Vector3.new(9e9,9e9,9e9)
 				end
 			end
 			
 			step = step - workspace.DistributedGameTime
-			local tPos = (tRoot.CFrame) * CFrame.Angles(
-				math.rad(Add*2),
-				0,
-				math.rad(Add)
-			)
-			Root.CFrame = tPos - (tRoot.Velocity * (step * 0.0003))
+			local tPos = (tRoot.CFrame * CFrame.Angles(math.rad(-90),0,0))
+			Root.CFrame = tPos - (tRoot.Velocity * (step * 0.003))
 		end)
 	
 		task.wait(Length)
@@ -934,21 +913,6 @@ local script = G2L["19"];
 			cmd.Env.Connection2:Disconnect()
 			cmd.Env.Connection2 = nil
 		end
-		
-		if cmd.Env.Gravity then
-			workspace.Gravity = cmd.Env.Gravity
-			cmd.Env.Gravity = nil
-		end
-	
-		local Character = LocalPlayer.Character
-		local Root = Character:FindFirstChild("HumanoidRootPart")
-		if not Root then return end
-		
-		local Animate = Character:FindFirstChild("Animate")
-		if Animate then Animate.Disabled = false end
-	
-		local Humanoid = Character:FindFirstChildOfClass("Humanoid")
-		if not Humanoid then return end
 	end
 	
 	AddCommand({"fuck"}, "Fucks the target :skull:", 1, function(msg, args, cmd)
@@ -966,24 +930,24 @@ local script = G2L["19"];
 		
 		local Humanoid = Character:FindFirstChildOfClass("Humanoid")
 		if not Humanoid then return "Player has no humanoid." end
-	
+		
+		local Parts = {}
+		for _,v in next, Character:GetDescendants() do
+			if v:IsA("BasePart") then
+				Parts[#Parts + 1] = v
+			end
+		end
+		
 		local new = 0
 		local switch = false
-		
-		if not cmd.Env.Gravity then
-			cmd.Env.Gravity = workspace.Gravity
-		end
-		workspace.Gravity = 0
-		
-		local Animate = Character:FindFirstChild("Animate")
-		if Animate then Animate.Disabled = true end
-	
-		for _,v in next, Humanoid:GetPlayingAnimationTracks() do
-			v:Stop()
-		end
 	
 		cmd.Env.Connection = RunService.Heartbeat:Connect(function()
 			if not Character or not tChar or not Root or not tRoot or not Humanoid then reverseFuck(cmd) end
+			Humanoid:ChangeState(0)
+			for _,v in next, Parts do
+				v.Velocity, v.RotVelocity = Vector3.zero, Vector3.zero
+			end
+			
 			local distance = (Root.Position - tRoot.Position).Magnitude
 			
 			if switch then
@@ -1025,16 +989,8 @@ local script = G2L["19"];
 			cmd.Env.Connection2:Disconnect()
 			cmd.Env.Connection2 = nil
 		end
-		
-		if cmd.Env.Gravity then
-			workspace.Gravity = cmd.Env.Gravity
-			cmd.Env.Gravity = nil
-		end
 	
 		local Character = LocalPlayer.Character
-		local Root = Character:FindFirstChild("HumanoidRootPart")
-		if not Root then return end
-	
 		local Humanoid = Character:FindFirstChildOfClass("Humanoid")
 		if not Humanoid then return end
 		
@@ -1057,14 +1013,21 @@ local script = G2L["19"];
 		local Humanoid = Character:FindFirstChildOfClass("Humanoid")
 		if not Humanoid then return "Player has no humanoid." end
 		
-		if not cmd.Env.Gravity then
-			cmd.Env.Gravity = workspace.Gravity
+		local Parts = {}
+		for _,v in next, Character:GetDescendants() do
+			if v:IsA("BasePart") then
+				Parts[#Parts + 1] = v
+			end
 		end
-		workspace.Gravity = 0
 		
 		Humanoid.Sit = true
 		cmd.Env.Connection = RunService.Heartbeat:Connect(function()
 			if not tChar or not tHead or not Character or not Root or not Humanoid then reverseRide() return "Instance missing." end
+			Humanoid:ChangeState(13)
+			for _,v in next, Parts do
+				v.Velocity, v.RotVelocity = Vector3.zero, Vector3.zero
+			end
+			
 			Root.CFrame = tHead.CFrame * CFrame.new(0,0,1)
 		end)
 		
@@ -1147,95 +1110,49 @@ local script = G2L["19"];
 	end)
 	
 	local function visible(cmd)
-		local env = cmd.Env
-		local con = env.connection
-		if con then
-			con:Disconnect()
-			env.connection = nil
-		end
-		
-		local Character = LocalPlayer.Character
-		local Root = Character:FindFirstChild("HumanoidRootPart")
-		if not Root then return "Player has no root." end
-		
-		local Humanoid = Character:FindFirstChildOfClass("Humanoid")
-		if not Humanoid then return "Player has no humanoid." end
-		
-		for _,bp in next, env.BodyParts do
-			_.Transparency = bp[1]
-			_.Material = bp[2]
-		end
-		
-		if Humanoid.RigType == Enum.HumanoidRigType.R15 then
-			local OldPos = Root.CFrame
-			Character:BreakJoints()
-			
-			local Connection
-			Connection = LocalPlayer.CharacterAdded:Connect(function(newChar)
-				Connection:Disconnect()
-				newChar:WaitForChild("HumanoidRootPart").CFrame = OldPos
-				return "R15 player is now visible."
-			end)
-		else
-			local obj = env.obj
-			if obj then
-				obj:Destroy()
-				env.obj = nil
-			end
-			return "R6 player is now visible."
-		end
+		local CPos = Camera.CFrame
+		local Character = cmd.Env.Invisible.Character.Value
+		Character.HumanoidRootPart.CFrame = LocalPlayer.Character.HumanoidRootPart.CFrame
+		LocalPlayer.Character = cmd.Env.Invisible.Character.Value
+		cmd.Env.Invisible:Destroy()
+		Character.Parent = workspace
+		Camera.CameraSubject = LocalPlayer.Character:FindFirstChildWhichIsA("Humanoid")
+		Camera.CFrame = CPos
 	end
 	
 	AddCommand({"invisible", "invis"}, "Client position changes, server position does not.", 0, function(msg, args, cmd)
-		if cmd.Env.obj or cmd.Env.ghost or cmd.Env.connection or cmd.Env.connection2 then
-			visible(cmd)
-			return "Player is now visible."
-		end
-	
 		local Character = LocalPlayer.Character
-		local Root = Character:FindFirstChild("HumanoidRootPart")
-		if not Root then return "Player has no root." end
-		
-		local Humanoid = Character:FindFirstChildOfClass("Humanoid")
-		if not Humanoid then return "Player has no humanoid." end
-		
-		local OldPos = Root.CFrame
-		Root.CFrame = CFrame.new(0,999999,0)
-		
-		wait(0.2)
-		
-		cmd.Env.connection = Maid(Humanoid.Died:Connect(function()
-			visible(cmd)
-		end))
-		
-		if not cmd.Env.BodyParts then
-			cmd.Env.BodyParts = {}
-		end
-		
-		for _,bp in next, Character:GetDescendants() do
-			if bp:IsA("BasePart") then
-				cmd.Env.BodyParts[bp] = {bp.Transparency, bp.Material}
-				bp.Transparency = 0.5
-				bp.Material = Enum.Material.ForceField
+		Character.Archivable = true
+		cmd.Env.Invisible = Character:Clone()
+		cmd.Env.Invisible.Humanoid.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None
+		local ObjectValue = Instance.new("ObjectValue", cmd.Env.Invisible)
+		ObjectValue.Name = "Character"
+		ObjectValue.Value = Character
+		for _, Part in pairs(cmd.Env.Invisible:GetDescendants()) do
+			if Part:IsA("BasePart") then
+				Part.Material = Enum.Material.ForceField
 			end
 		end
-		
-		if Humanoid.RigType == Enum.HumanoidRigType.R15 then
-			Root.Parent = nil
-			Root.Parent = Character
-			Root.CFrame = OldPos
-			return "R15 player is now invisible."
-		else
-			cmd.Env.obj = Root:Clone()
-			cmd.Env.obj.Parent = Character
-			cmd.Env.obj.CFrame = OldPos
-			return "R6 player is now invisible."
-		end
+		local CPos = Camera.CFrame
+		local Origin = Character.HumanoidRootPart.CFrame
+		Character:MoveTo(Vector3.new(0, 9e9, 0))
+		Camera.CameraType = Enum.CameraType.Scriptable
+		wait(0.2)
+		Camera.CameraType = Enum.CameraType.Custom
+		Character.Parent = nil
+		cmd.Env.Invisible.Parent = workspace
+		cmd.Env.Invisible.HumanoidRootPart.CFrame = Origin
+		LocalPlayer.Character = cmd.Env.Invisible
+		Camera.CameraSubject = LocalPlayer.Character:FindFirstChildWhichIsA("Humanoid")
+		Camera.CFrame = CPos
+		LocalPlayer.Character.Animate.Disabled = true
+		LocalPlayer.Character.Animate.Disabled = false
+		return "Successfully make player invisible." -- [ Ctrl + C Ctrl + V 4DBug ] --
 	end)
 	
 	AddCommand({"visible", "vis"}, "Reverses desync command.", 0, function()
-		local result = visible(GetCommand("invisible"))
-		return result
+		visible(GetCommand("invisible"))
+		return "Successfully make player visible."
 	end)
 	
 	AddCommand({"walkspeed", "speed", "ws"}, "Sets the speed of the player.", 0, function(msg, args, cmd)
@@ -1268,6 +1185,18 @@ local script = G2L["19"];
 		return "Successfully set hip height to " .. HipHeight .. "!"
 	end)
 	
+	local function reverseOrbit(cmd)
+		if cmd.Env.Orbit then
+			cmd.Env.Orbit:Disconnect()
+			cmd.Env.Orbit = nil
+		end
+		
+		if cmd.Env.Death then
+			cmd.Env.Death:Disconnect()
+			cmd.Env.Death = nil
+		end
+	end
+	
 	AddCommand({"orbit"}, "Orbits local player to target.", 1, function(msg, args, cmd)
 		local Target = GetPlayer(args[1])
 		if not Target then return "Target not found." end
@@ -1280,12 +1209,95 @@ local script = G2L["19"];
 		local Root = Char:FindFirstChild("HumanoidRootPart")
 		if not Root then return "Player has no root." end
 		
+		local Humanoid = Char:FindFirstChildOfClass("Humanoid")
+		if not Humanoid then return "Player has no humanoid." end
+		
+		local Parts = {}
+		for _,v in next, Char:GetDescendants() do
+			if v:IsA("BasePart") then
+				Parts[#Parts + 1] = v
+			end
+		end
+		
+		local i = 0
 		cmd.Env.Orbit = RunService.Heartbeat:Connect(function()
-			
+			if not Target or not tChar or not tRoot or not Char or not Root or not Humanoid then reverseOrbit(cmd) end
+			i += 0.01
+			Humanoid:ChangeState(0)
+			for _,v in next, Parts do
+				v.Velocity, v.RotVelocity = Vector3.zero, Vector3.zero
+			end
+			Root.CFrame = tRoot.CFrame * CFrame.new(
+				math.sin(i) * 3, 0,
+				math.cos(i) * 3)
+			* CFrame.Angles(0,i,0)
 		end)
 		Root.CFrame = tRoot.CFrame
+		
+		cmd.Env.Death = Humanoid.Died:Connect(function()
+			reverseOrbit(cmd)
+		end)
 	
-		return "Successfully teleported to " .. Target.Name
+		return "Successfully orbited " .. Target.Name .. "!"
+	end)
+	
+	AddCommand({"unorbit"}, "Reverses the orbit command.", 0, function(msg, args, cmd)
+		reverseOrbit(GetCommand("orbit"))
+		return "Orbit disabled."
+	end)
+	
+	AddCommand({"respawn", "re", "refresh"}, "Respawns the player.", 0, function(msg, args, cmd)
+		local Character = LocalPlayer.Character
+		local Root = Character:FindFirstChild("HumanoidRootPart")
+		if not Root then return "Player has no root." end
+		
+		local OldPos = Root.CFrame
+		Character:BreakJoints()
+		
+		local Connection
+		Connection = LocalPlayer.CharacterAdded:Connect(function(newChar)
+			Connection:Disconnect()
+			newChar:WaitForChild("HumanoidRootPart").CFrame = OldPos
+			return "Successfully respawned character!"
+		end)
+	end)
+	
+	AddCommand({"rejoin", "rj"}, "Rejoins the server.", 0, function(msg, args, cmd)
+		if #Players:GetPlayers() == 1 then
+			LocalPlayer:Kick()
+			TPService:Teleport(game.PlaceId)
+		else
+			TPService:TeleportToPlaceInstance(game.PlaceId, game.JobId)
+		end
+		return "Rejoining..."
+	end)
+	
+	AddCommand({"infinitejump", "infjump"}, "No more jump cooldown.", 0, function(msg, args, cmd)
+		if cmd.Env.jump then cmd.Env.jump:Disconnect() cmd.Env.jump = nil return "Disabled infinite jump." end
+		local Character = LocalPlayer.Character
+		local Humanoid = Character:FindFirstChildOfClass("Humanoid")
+		if not Humanoid then return "Player has no humanoid." end
+		
+		cmd.Env.jump = UIS.JumpRequest:Connect(function()
+			Humanoid:ChangeState(3)
+		end)
+		
+		return "Enabled infinite jump."
+	end)
+	
+	AddCommand({"infinitejump", "infjump"}, "No more jump cooldown.", 0, function(msg, args, cmd)
+		if cmd.Env.jump then cmd.Env.jump:Disconnect() cmd.Env.jump = nil return "Disabled infinite jump." end
+		return "Infinite jump not enabled."
+	end)
+	
+	AddCommand({"serverhop"}, "Teleport to another server.", 0, function(msg, args, cmd)
+		for i, v in pairs(HttpService:JSONDecode(game:HttpGet("https://games.roblox.com/v1/games/" .. game.PlaceId .. "/servers/Public?sortOrder=Asc&limit=100")).data) do
+			if v.playing < v.maxPlayers then
+				TPService:TeleportToPlaceInstance(game.PlaceId, v.id)
+				return "Sending to server."
+			end
+		end
+		return "No servers found."
 	end)
 	
 	table.sort(Commands, function(a, b)
