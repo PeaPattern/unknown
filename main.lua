@@ -848,7 +848,7 @@ local script = G2L["19"];
 			end
 			
 			step = step - workspace.DistributedGameTime
-			local tPos = tRoot.CFrame * CFrame.Angles(math.rad(-90),0,0) * CFrame.new(0,math.sin(tick() / math.pi * 10) * 5,0)
+			local tPos = tRoot.CFrame * CFrame.new(0,math.sin(tick() / math.pi * 10) * 5,0)
 			Root.CFrame = tPos - (tRoot.Velocity * (step * 0.003))
 		end)
 	
