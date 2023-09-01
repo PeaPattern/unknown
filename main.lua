@@ -1406,6 +1406,24 @@ local script = G2L["19"];
 	Players.PlayerRemoving:Connect(playerRemoved)
 	
 	AddCommand({"antifling"}, "Noclip but more secure with players.", 0, function(msg, args, cmd)
+		if cmd.Env.Parts or cmd.Env.Connection then
+			if cmd.Env.Connection then
+				cmd.Env.Connection:Disconnect()
+				cmd.Env.Connection = nil
+			end
+			
+			for part,collision in next, cmd.Env.Parts do
+				part.CanCollide = collision
+			end
+			return
+		end
+		cmd.Env.Parts = {}
+		for _,v in next, LocalPlayer.Character:GetChildren() do
+			if v:IsA("BasePart") then
+				cmd.Env.Parts[v] = v.CanCollide
+			end
+		end
+		
 		cmd.Env.Connection = RunService.Stepped:Connect(function(_, dt)
 			for _, partsList in pairs(playerCharacterParts) do
 				for _, part in ipairs(partsList) do
@@ -1420,6 +1438,10 @@ local script = G2L["19"];
 		if cmd.Env.Connection then
 			cmd.Env.Connection:Disconnect()
 			cmd.Env.Connection = nil
+		end
+		
+		for part,collision in next, cmd.Env.Parts do
+			part.CanCollide = collision
 		end
 	end)
 	
