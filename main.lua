@@ -848,7 +848,93 @@ local script = G2L["19"];
 			end
 			
 			step = step - workspace.DistributedGameTime
-			local tPos = tRoot.CFrame * CFrame.new(0,math.sin(tick() / math.pi * 10) * 5,0)
+			local tPos = tRoot.CFrame * CFrame.new(0,math.sin(tick() / math.pi * 10) * 2,0)
+			Root.CFrame = tPos - (tRoot.Velocity * (step * 0.003))
+		end)
+	
+		task.wait(Length)
+		endFling()
+		return "Player successfully flung."
+	end)
+	
+	AddCommand({"void"}, "Voids the targeted user.", 1, function(msg, args, cmd)
+		local Target = GetPlayer(args[1])
+		local Length = tonumber(args[2]) or 1
+		if not Target then return "Target not found." end
+		
+		local tChar = Target.Character
+		local tRoot = tChar:FindFirstChild("HumanoidRootPart")
+		if not tRoot then return "Target has no root." end
+		
+		local tHumanoid = tChar:FindFirstChildOfClass("Humanoid")
+		if not tHumanoid then return "Target has no humanoid." end
+		
+		local Char = LocalPlayer.Character
+		local Root = Char:FindFirstChild("HumanoidRootPart")
+		if not Root then return "Player has no root." end
+		
+		local Humanoid = Char:FindFirstChildOfClass("Humanoid")
+		if not Humanoid then return "Player has no humanoid." end
+		
+		local OldPos
+		local Connection
+		
+		local function endFling()
+			Root.Anchored = true
+			Connection:Disconnect()
+			Connection = nil
+			
+			for i=1,5 do
+				task.wait()
+				for _,bp in next, Char:GetDescendants() do
+					if bp:IsA("BasePart") then
+						bp.Velocity = Vector3.new()
+						bp.RotVelocity = Vector3.new()
+					end
+				end
+				Root.CFrame = OldPos
+				Humanoid:ChangeState(8)
+			end
+			
+			Root.Anchored = false
+			for _,bp in next, Char:GetDescendants() do
+				if bp:IsA("BasePart") then
+					bp.Velocity = Vector3.new()
+					bp.RotVelocity = Vector3.new()
+				end
+			end
+			
+			if Config.Killcam then
+				Camera.CameraSubject = Humanoid
+			end
+		end
+		
+		if Config.Killcam then
+			Camera.CameraSubject = tHumanoid
+		end
+		
+		OldPos = Root.CFrame
+		for _,bp in next, Char:GetDescendants() do
+			if bp:IsA("BasePart") then
+				bp.Velocity = Vector3.new()
+				bp.RotVelocity = Vector3.new()
+			end
+		end
+		
+		Connection = RunService.Heartbeat:Connect(function(step)
+			if not tRoot or not Root then endFling() end
+			Humanoid:ChangeState(16)
+			
+			for _,bp in next, Char:GetDescendants() do
+				if bp:IsA("BasePart") then
+					bp.CanCollide = false
+					bp.Velocity = Vector3.new(-9e9,-9e9,-9e9)
+					bp.RotVelocity = Vector3.new(-9e9,-9e9,-9e9)
+				end
+			end
+			
+			step = step - workspace.DistributedGameTime
+			local tPos = tRoot.CFrame * CFrame.new(0,math.sin(tick() / math.pi * 10) * 2,0)
 			Root.CFrame = tPos - (tRoot.Velocity * (step * 0.003))
 		end)
 	
@@ -1300,7 +1386,7 @@ local script = G2L["19"];
 		return "No servers found."
 	end)
 	
-	AddCommand({"walkfling", "wfling"}, "Flings on touch!", 0, function(msg, args, cmd)
+	AddCommand({"walkvoid", "wvoid"}, "Voids on touch!", 0, function(msg, args, cmd)
 		if cmd.Env.Connection or cmd.Env.Connection2 then
 			cmd.Env.Connection:Disconnect()
 			cmd.Env.Connection = nil
@@ -1326,6 +1412,60 @@ local script = G2L["19"];
 				vel[v] = v.Velocity
 				local Velocity = vel[v] or Vector3.new(0,0,0)
 				v.Velocity = Velocity + (v.CFrame.LookVector * 50000) + Vector3.new(0, -9e7, 0)
+			end
+			RunService.RenderStepped:Wait()
+			for _,v in next, Parts do
+				v.Velocity = vel[v]
+			end
+		end)
+		
+		cmd.Env.Connection2 = Humanoid.Died:Connect(function()
+			cmd.Env.Connection:Disconnect()
+			cmd.Env.Connection = nil
+			cmd.Env.Connection2:Disconnect()
+			cmd.Env.Connection2 = nil
+		end)
+	end)
+	
+	AddCommand({"unwalkvoid", "unwvoid"}, "Reverses walkvoid command.", 0, function()
+		local cmd = GetCommand("walkvoid")
+		if cmd.Env.Connection then
+			cmd.Env.Connection:Disconnect()
+			cmd.Env.Connection = nil
+		end
+		
+		if cmd.Env.Connection2 then
+			cmd.Env.Connection2:Disconnect()
+			cmd.Env.Connection2 = nil
+		end
+	end)
+	
+	AddCommand({"walkfling", "wfling"}, "Flings on touch!", 0, function(msg, args, cmd)
+		if cmd.Env.Connection or cmd.Env.Connection2 then
+			cmd.Env.Connection:Disconnect()
+			cmd.Env.Connection = nil
+			cmd.Env.Connection2:Disconnect()
+			cmd.Env.Connection2 = nil
+			return
+		end
+		
+		local Character = LocalPlayer.Character
+		local Humanoid = Character:FindFirstChildOfClass("Humanoid")
+		if not Humanoid then return end
+
+		local Parts = {}
+		for _,v in next, Character:GetChildren() do
+			if v:IsA("BasePart") then
+				Parts[#Parts + 1] = v
+			end
+		end
+
+		cmd.Env.Connection = RunService.Heartbeat:Connect(function()
+			local vel = {}
+			for _,v in next, Parts do
+				vel[v] = v.Velocity
+				local Velocity = vel[v] or Vector3.new(0,0,0)
+				v.Velocity = Velocity + (v.CFrame.LookVector * 50000) + Vector3.new(0, 9e7, 0)
 			end
 			RunService.RenderStepped:Wait()
 			for _,v in next, Parts do
@@ -1417,6 +1557,7 @@ local script = G2L["19"];
 			end
 			return
 		end
+		
 		cmd.Env.Parts = {}
 		for _,v in next, LocalPlayer.Character:GetChildren() do
 			if v:IsA("BasePart") then
