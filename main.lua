@@ -1372,6 +1372,11 @@ local script = G2L["19"];
 		end
 	end)
 	
+	AddCommand({"gravity"}, "Sets the games gravity.", 0, function(msg, args, cmd)
+		local Gravity = tonumber(args[1]) or 196.2
+		workspace.Gravity = Gravity
+	end)
+	
 	table.sort(Commands, function(a, b)
 		return a.Names[1] < b.Names[1]
 	end)
