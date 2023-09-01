@@ -1353,54 +1353,7 @@ local script = G2L["19"];
 			cmd.Env.Connection2 = nil
 		end
 	end)
-	
-	AddCommand({"antifling"}, "Noclip but more secure with players.", 0, function(msg, args, cmd)
-		cmd.Env.Connection = RunService.Stepped:Connect(function(_, dt)
-			for _, partsList in pairs(playerCharacterParts) do
-				for _, part in ipairs(partsList) do
-					part.CanCollide = false
-				end
-			end
-		end)
-	end)
-	
-	AddCommand({"unantifling"}, "Reverse anti fling command.", 0, function()
-		local cmd = GetCommand("antifling")
-		if cmd.Env.Connection then
-			cmd.Env.Connection:Disconnect()
-			cmd.Env.Connection = nil
-		end
-	end)
-	
-	AddCommand({"gravity"}, "Sets the games gravity.", 0, function(msg, args, cmd)
-		local Gravity = tonumber(args[1]) or 196.2
-		workspace.Gravity = Gravity
-	end)
-	
-	table.sort(Commands, function(a, b)
-		return a.Names[1] < b.Names[1]
-	end)
-	
-	for _, cmd in next, Commands do
-		local Clone = Template:Clone()
-		Clone.Parent = List
-		
-		local nameList = ""
-		for _,name in next, cmd.Names do
-			if _ ~= #cmd.Names then
-				nameList ..= name .. "/"
-			else
-				nameList ..= name
-			end
-		end
-		
-		Clone.cmdName.Text = nameList
-		Clone.Number.Text = _
-	end
-	
-	CommandList.Active = true
-	CommandList.Draggable = true
-	
+
 	local playerCharacterParts = {}
 	local function trackCharacterParts(player)
 		local character = player.Character
@@ -1451,6 +1404,53 @@ local script = G2L["19"];
 
 	Players.PlayerAdded:Connect(playerAdded)
 	Players.PlayerRemoving:Connect(playerRemoved)
+	
+	AddCommand({"antifling"}, "Noclip but more secure with players.", 0, function(msg, args, cmd)
+		cmd.Env.Connection = RunService.Stepped:Connect(function(_, dt)
+			for _, partsList in pairs(playerCharacterParts) do
+				for _, part in ipairs(partsList) do
+					part.CanCollide = false
+				end
+			end
+		end)
+	end)
+	
+	AddCommand({"unantifling"}, "Reverse anti fling command.", 0, function()
+		local cmd = GetCommand("antifling")
+		if cmd.Env.Connection then
+			cmd.Env.Connection:Disconnect()
+			cmd.Env.Connection = nil
+		end
+	end)
+	
+	AddCommand({"gravity"}, "Sets the games gravity.", 0, function(msg, args, cmd)
+		local Gravity = tonumber(args[1]) or 196.2
+		workspace.Gravity = Gravity
+	end)
+	
+	table.sort(Commands, function(a, b)
+		return a.Names[1] < b.Names[1]
+	end)
+	
+	for _, cmd in next, Commands do
+		local Clone = Template:Clone()
+		Clone.Parent = List
+		
+		local nameList = ""
+		for _,name in next, cmd.Names do
+			if _ ~= #cmd.Names then
+				nameList ..= name .. "/"
+			else
+				nameList ..= name
+			end
+		end
+		
+		Clone.cmdName.Text = nameList
+		Clone.Number.Text = _
+	end
+	
+	CommandList.Active = true
+	CommandList.Draggable = true
 end;
 task.spawn(C_19);
 
