@@ -1300,6 +1300,78 @@ local script = G2L["19"];
 		return "No servers found."
 	end)
 	
+	AddCommand({"walkfling", "wfling"}, "Flings on touch!", 0, function(msg, args, cmd)
+		if cmd.Env.Connection or cmd.Env.Connection2 then
+			cmd.Env.Connection:Disconnect()
+			cmd.Env.Connection = nil
+			cmd.Env.Connection2:Disconnect()
+			cmd.Env.Connection2 = nil
+			return
+		end
+		
+		local Character = LocalPlayer.Character
+		local Humanoid = Character:FindFirstChildOfClass("Humanoid")
+		if not Humanoid then return end
+
+		local Parts = {}
+		for _,v in next, Character:GetChildren() do
+			if v:IsA("BasePart") then
+				Parts[#Parts + 1] = v
+			end
+		end
+
+		cmd.Env.Connection = RunService.Heartbeat:Connect(function()
+			local vel = {}
+			for _,v in next, Parts do
+				vel[v] = v.Velocity
+				local Velocity = vel[v] or Vector3.new(0,0,0)
+				v.Velocity = Velocity + (v.CFrame.LookVector * 50000) + Vector3.new(0, -9e7, 0)
+			end
+			RunService.RenderStepped:Wait()
+			for _,v in next, Parts do
+				v.Velocity = vel[v]
+			end
+		end)
+		
+		cmd.Env.Connection2 = Humanoid.Died:Connect(function()
+			cmd.Env.Connection:Disconnect()
+			cmd.Env.Connection = nil
+			cmd.Env.Connection2:Disconnect()
+			cmd.Env.Connection2 = nil
+		end)
+	end)
+	
+	AddCommand({"unwalkfling", "unwfling"}, "Reverses walkfling command.", 0, function()
+		local cmd = GetCommand("walkfling")
+		if cmd.Env.Connection then
+			cmd.Env.Connection:Disconnect()
+			cmd.Env.Connection = nil
+		end
+		
+		if cmd.Env.Connection2 then
+			cmd.Env.Connection2:Disconnect()
+			cmd.Env.Connection2 = nil
+		end
+	end)
+	
+	AddCommand({"antifling"}, "Noclip but more secure with players.", 0, function(msg, args, cmd)
+		cmd.Env.Connection = RunService.Stepped:Connect(function(_, dt)
+			for _, partsList in pairs(playerCharacterParts) do
+				for _, part in ipairs(partsList) do
+					part.CanCollide = false
+				end
+			end
+		end)
+	end)
+	
+	AddCommand({"unantifling"}, "Reverse anti fling command.", 0, function()
+		local cmd = GetCommand("antifling")
+		if cmd.Env.Connection then
+			cmd.Env.Connection:Disconnect()
+			cmd.Env.Connection = nil
+		end
+	end)
+	
 	table.sort(Commands, function(a, b)
 		return a.Names[1] < b.Names[1]
 	end)
@@ -1324,6 +1396,56 @@ local script = G2L["19"];
 	CommandList.Active = true
 	CommandList.Draggable = true
 	
+	local playerCharacterParts = {}
+	local function trackCharacterParts(player)
+		local character = player.Character
+		if character then
+			local partsList = {}
+			
+			for _, descendant in ipairs(character:GetDescendants()) do
+				if descendant:IsA("BasePart") then
+					table.insert(partsList, descendant)
+				end
+			end
+			
+			playerCharacterParts[player] = partsList
+
+			character.DescendantAdded:Connect(function(descendant)
+				if descendant:IsA("BasePart") then
+					table.insert(partsList, descendant)
+				end
+			end)
+
+			character.DescendantRemoving:Connect(function(descendant)
+				if descendant:IsA("BasePart") then
+					for i, part in ipairs(partsList) do
+						if part == descendant then
+							table.remove(partsList, i)
+							break
+						end
+					end
+				end
+			end)
+		end
+	end
+
+	local function playerAdded(player)
+		trackCharacterParts(player)
+		player.CharacterAdded:Connect(function()
+			trackCharacterParts(player)
+		end)
+	end
+
+	local function playerRemoved(player)
+		playerCharacterParts[player] = nil
+	end
+
+	for _, player in ipairs(game.Players:GetPlayers()) do
+		playerAdded(player)
+	end
+
+	Players.PlayerAdded:Connect(playerAdded)
+	Players.PlayerRemoving:Connect(playerRemoved)
 end;
 task.spawn(C_19);
 
