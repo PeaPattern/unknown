@@ -293,7 +293,7 @@ G2L["25"]["TextColor3"] = Color3.fromRGB(137, 44, 44);
 G2L["25"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
 G2L["25"]["Size"] = UDim2.new(1, 0, 0, 0);
 G2L["25"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-G2L["25"]["Text"] = [[FLEXADMIN]];
+G2L["25"]["Text"] = [[UNKNOWN]];
 G2L["25"]["BackgroundTransparency"] = 1;
 G2L["25"]["Position"] = UDim2.new(0.5, 0, 0.5, 0);
 
@@ -476,7 +476,7 @@ local script = G2L["19"];
 	
 	local function Notify(Message)
 		StarterGui:SetCore("SendNotification", {
-			Title = "FlexAdmin",
+			Title = "Unknown",
 			Text = Message,
 			Duration = 4 + (Message:len() * 0.1)
 		})
@@ -484,7 +484,7 @@ local script = G2L["19"];
 	
 	--== UI Handler ==--
 	
-	Notify("Welcome to FlexAdmin :: Created by PeaPattern")
+	Notify("Welcome to Unknown :: Created by PeaPattern")
 	
 	Close.MouseButton1Down:Connect(function()
 		CommandList.Visible = false
@@ -1655,7 +1655,10 @@ local script = G2L["19"];
 		for _, Tool in next, workspace:GetChildren() do
 			if Tool:IsA("Tool") then
 				Humanoid:EquipTool(Tool)
-				Character[Tool].Parent = Backpack
+				task.spawn(function()
+					repeat wait() until Tool.Parent == Character
+					Tool.Parent = Backpack
+				end)
 			end
 		end
 	end)
@@ -1669,7 +1672,10 @@ local script = G2L["19"];
 				if not Humanoid then return end
 				
 				Humanoid:EquipTool(Tool)
-				Character[Tool].Parent = Backpack
+				task.spawn(function()
+					repeat wait() until Tool.Parent == Character
+					Tool.Parent = Backpack
+				end)
 			end
 		end)
 	end)
@@ -1680,6 +1686,14 @@ local script = G2L["19"];
 			cmd.Env.Connection:Disconnect()
 			cmd.Env.Connection = nil
 		end
+	end)
+	
+	AddCommand({"dex", "explorer"}, "Calmly skidded.", 0, function()
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/Babyhamsta/RBLX_Scripts/main/Universal/BypassedDarkDexV3.lua", true))()
+	end)
+	
+	AddCommand({"remotespy", "rspy"}, "Calmly skidded.", 0, function()
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/78n/SimpleSpy/main/SimpleSpySource.lua"))()
 	end)
 	
 	table.sort(Commands, function(a, b)
