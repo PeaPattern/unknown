@@ -1591,6 +1591,97 @@ local script = G2L["19"];
 		workspace.Gravity = Gravity
 	end)
 	
+	AddCommand({"givetools", "gtools", "gt"}, "Gives the target your tools.", 1, function(msg, args, cmd)
+		local Target = GetPlayer(args[1])
+		if not Target then return end
+		
+		local Backpack = LocalPlayer.Backpack
+		local Character = LocalPlayer.Character
+		local Root = Character:FindFirstChild("HumanoidRootPart")
+		if not Root then return end
+
+		for _,v in next, Character:GetChildren() do
+			if v:IsA("Tool") then
+				v.Parent = Backpack	
+			end
+		end
+		
+		local tChar = Target.Character
+		local tRoot = tChar:FindFirstChild("HumanoidRootPart")
+		if not tRoot then return end
+		
+		local toolCount = 0
+		for _,v in next, Backpack:GetChildren() do
+			if v:IsA("Tool") and v.CanBeDropped then
+				local Handle = v:FindFirstChild("Handle")
+				if not Handle then return end
+				toolCount += 1
+				
+				v.Parent = Character
+				v.Parent = workspace
+				
+				repeat
+					firetouchinterest(Handle, tRoot, 0)
+					firetouchinterest(Handle, tRoot, 1)
+					Handle.CFrame = tRoot.CFrame
+					task.wait()
+				until v.Parent ~= workspace
+			end
+		end
+		
+		return "Succesfully gave target " .. toolCount .. " tools!"
+	end)
+	
+	AddCommand({"re", "respawn", "refresh"}, "Respawns the player.", 0, function(msg, args, cmd)
+		local Character = LocalPlayer.Character
+		local Root = Character:FindFirstChild("HumanoidRootPart")
+		if not Root then return end
+		
+		local OldPos = Root.CFrame
+		Character:BreakJoints()
+		
+		LocalPlayer.CharacterAdded:Once(function(newChar)
+			local Root = newChar:WaitForChild("HumanoidRootPart")
+			Root.CFrame = OldPos
+		end)
+	end)
+	
+	AddCommand({"grabtools", "gtools", "gt"}, "Grabs tools in workspace.", 0, function(msg, args, cmd)
+		local Character = LocalPlayer.Character
+		local Backpack = LocalPlayer.Backpack
+		local Humanoid = Character:FindFirstChildOfClass("Humanoid")
+		if not Humanoid then return end
+		
+		for _, Tool in next, workspace:GetChildren() do
+			if Tool:IsA("Tool") then
+				Humanoid:EquipTool(Tool)
+				Character[Tool].Parent = Backpack
+			end
+		end
+	end)
+	
+	AddCommand({"autograbtools", "agt"}, "Automatically grabs tools in workspace.", 0, function(msg, args, cmd)
+		cmd.Env.Connection = workspace.ChildAdded:Connect(function(Tool)
+			if Tool:IsA("Tool") then
+				local Character = LocalPlayer.Character
+				local Backpack = LocalPlayer.Backpack
+				local Humanoid = Character:FindFirstChildOfClass("Humanoid")
+				if not Humanoid then return end
+				
+				Humanoid:EquipTool(Tool)
+				Character[Tool].Parent = Backpack
+			end
+		end)
+	end)
+	
+	AddCommand({"unautograbtools", "unagt"}, "Reverses autograbtools command.", 0, function(msg, args, cmd)
+		local cmd = GetCommand("autograbtools")
+		if cmd.Env.Connection then
+			cmd.Env.Connection:Disconnect()
+			cmd.Env.Connection = nil
+		end
+	end)
+	
 	table.sort(Commands, function(a, b)
 		return a.Names[1] < b.Names[1]
 	end)
