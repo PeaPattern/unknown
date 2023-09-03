@@ -1621,9 +1621,11 @@ local script = G2L["19"];
 				v.Parent = workspace
 				
 				repeat
+					sethiddenproperty(LocalPlayer, "SimulationRadius", 1/0)
 					firetouchinterest(Handle, tRoot, 0)
 					firetouchinterest(Handle, tRoot, 1)
-					Handle.CFrame = tRoot.CFrame
+					Handle.CFrame = Root.CFrame * CFrame.new(0,8,0)
+					Handle.Velocity = Vector3.new(69, 69, 69)
 					task.wait()
 				until v.Parent ~= workspace
 			end
