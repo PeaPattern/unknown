@@ -423,6 +423,7 @@ local script = G2L["19"];
 	local StarterGui = game:GetService("StarterGui")
 	local HttpService = game:GetService("HttpService")
 	local TCService = game:GetService("TextChatService")
+	local RStorage = game:GetService("ReplicatedStorage")
 	
 	local LocalPlayer = Players.LocalPlayer
 	local Camera = workspace.CurrentCamera
