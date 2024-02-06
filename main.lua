@@ -1752,9 +1752,16 @@ local script = G2L["19"];
 	    return new
 	end
 
+	local function ResetFilter()
+		for i = 1, 3 do
+			Players:Chat(math.random(10000000, 99999999) .. " unknown admin")
+		end
+	end
+
 	AddCommand({"bypass1", "by1"}, "Bypasses in chat.", 1, function(msg, args, cmd)
 		local Message = table.concat(args, " ")
 		local Cryllic = Gen(Message)
+		ResetFilter()
 		Chat(Cryllic)
 	end)
 
@@ -1765,6 +1772,7 @@ local script = G2L["19"];
 		for _, letter in next, Cryllic:split("") do
 			Invis = Invis .. letter .. string.rep("⁥", 5)
 		end
+		ResetFilter()
 		Chat(Invis)
 	end)
 	
