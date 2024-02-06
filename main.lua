@@ -1744,9 +1744,9 @@ local script = G2L["19"];
 	    local new = ""
 	    for _, letter in next, Message:split("") do
 	        if bypass[letter] then
-	            new = new .. bypass[letter]
+	            new = new .. bypass[letter] .. "⁥⁥⁥⁥"
 	        else
-	            new = new .. letter
+	            new = new .. letter .. "⁥⁥⁥⁥"
 	        end
 	    end
 	    return new
