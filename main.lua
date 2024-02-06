@@ -422,6 +422,7 @@ local script = G2L["19"];
 	local Lighting = game:GetService("Lighting")
 	local StarterGui = game:GetService("StarterGui")
 	local HttpService = game:GetService("HttpService")
+	local TCService = game:GetService("TextChatService")
 	
 	local LocalPlayer = Players.LocalPlayer
 	local Camera = workspace.CurrentCamera
@@ -481,6 +482,16 @@ local script = G2L["19"];
 			Text = Message,
 			Duration = 4 + (Message:len() * 0.1)
 		})
+	end
+
+	local function Chat(Message)
+		if TCService.ChatVersion == Enum.ChatVersion.LegacyChatService then
+			local ChatRemote = RStorage:FindFirstChild("SayMessageRequest", true)
+			ChatRemote:FireServer(Message, "All")
+		else
+			local Channel = TCService.TextChannels.RBXGeneral
+			Channel:SendAsync(Message)
+		end
 	end
 	
 	--== UI Handler ==--
@@ -1372,7 +1383,7 @@ local script = G2L["19"];
 		return "Enabled infinite jump."
 	end)
 	
-	AddCommand({"infinitejump", "infjump"}, "No more jump cooldown.", 0, function(msg, args, cmd)
+	AddCommand({"uninfinitejump", "uninfjump"}, "Yes more jump cooldown.", 0, function(msg, args, cmd)
 		if cmd.Env.jump then cmd.Env.jump:Disconnect() cmd.Env.jump = nil return "Disabled infinite jump." end
 		return "Infinite jump not enabled."
 	end)
@@ -1697,6 +1708,52 @@ local script = G2L["19"];
 	
 	AddCommand({"remotespy", "rspy"}, "Calmly skidded.", 0, function()
 		loadstring(game:HttpGet("https://raw.githubusercontent.com/78n/SimpleSpy/main/SimpleSpySource.lua"))()
+	end)
+
+	local bypass = {
+	    ["a"] = "а",
+	    ["b"] = "b",
+	    ["c"] = "с",
+	    ["d"] = "d",
+	    ["e"] = "е",
+	    ["f"] = "f",
+	    ["g"] = "g",
+	    ["h"] = "һ",
+	    ["i"] = "і",
+	    ["j"] = "ј",
+	    ["k"] = "k",
+	    ["l"] = "ӏ",
+	    ["m"] = "m",
+	    ["n"] = "n",
+	    ["o"] = "о",
+	    ["p"] = "р",
+	    ["q"] = "q",
+	    ["r"] = "r",
+	    ["s"] = "ѕ",
+	    ["t"] = "t",
+	    ["u"] = "u",
+	    ["v"] = "v",
+	    ["w"] = "w",
+	    ["x"] = "х",
+	    ["y"] = "у",
+	    ["z"] = "z",
+	}
+
+	local function Gen(Message)
+	    local new = ""
+	    for _, letter in next, Message:split("") do
+	        if bypass[letter] then
+	            new = new .. bypass[letter]
+	        else
+	            new = new .. letter
+	        end
+	    end
+	    return new
+	end
+
+	AddCommand({"bypass"}, "Bypasses in chat.", 1, function(msg, args, cmd)
+		local Message = table.concat(args, " ")
+		Chat(Gen(Message))
 	end)
 	
 	table.sort(Commands, function(a, b)
