@@ -357,7 +357,7 @@ G2L["2d"]["ScrollBarImageColor3"] = Color3.fromRGB(137, 44, 44);
 G2L["2d"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
 G2L["2d"]["Position"] = UDim2.new(0, 0, 0.0972222238779068, 0);
 G2L["2d"]["Name"] = [[List]];
-G2L["2d"]["AutomaticCanvasSize"] = Enum.AutomaticCanvasSize.Y
+G2L["2d"]["AutomaticCanvasSize"] = Enum.AutomaticSize.Y
 
 -- StarterGui.InGameGUI.CommandList.List.UIGridLayout
 G2L["2e"] = Instance.new("UIGridLayout", G2L["2d"]);
