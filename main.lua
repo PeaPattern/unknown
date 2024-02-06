@@ -1740,7 +1740,7 @@ local script = G2L["19"];
 	    ["z"] = "z",
 	}
 
-	local function Gen(Message)
+	local function Gen(Message, Invis)
 	    local new = ""
 	    for _, letter in next, Message:split("") do
 	        if bypass[letter] then
@@ -1748,6 +1748,7 @@ local script = G2L["19"];
 	        else
 	            new = new .. letter
 	        end
+		if Invis then new = new .. string.rep("⁥", 5) end
 	    end
 	    return new
 	end
@@ -1760,20 +1761,16 @@ local script = G2L["19"];
 
 	AddCommand({"bypass1", "by1"}, "Bypasses in chat.", 1, function(msg, args, cmd)
 		local Message = table.concat(args, " ")
-		local Cryllic = Gen(Message)
+		local Cryllic = Gen(Message, false)
 		ResetFilter()
 		Chat(Cryllic)
 	end)
 
 	AddCommand({"bypass2", "by2"}, "Bypasses in chat.", 1, function(msg, args, cmd)
 		local Message = table.concat(args, " ")
-		local Cryllic = Gen(Message)
-		local Invis = ""
-		for _, letter in next, Cryllic:split("") do
-			Invis = Invis .. letter .. string.rep("⁥", 5)
-		end
+		local Cryllic = Gen(Message, true)
 		ResetFilter()
-		Chat(Invis)
+		Chat(Cryllic)
 	end)
 	
 	table.sort(Commands, function(a, b)
