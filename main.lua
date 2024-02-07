@@ -1801,7 +1801,7 @@ local script = G2L["19"];
 	AddCommand({"bypass3", "by3"}, "Bypasses in chat.", 1, function(msg, args, cmd)
 		local New = {}
 		for _, Word in next, args do
-			local Found = Keywords[word]
+			local Found = Keywords[Word]
 			if Found then
 				New[#New + 1] = Found
 			else
