@@ -1809,7 +1809,7 @@ local script = G2L["19"];
 			end
 		end
 		local Message = table.concat(New, " ")
-		local Cryllic = Gen(Message, true)
+		local Cryllic = Gen(Message, false)
 		ResetFilter()
 		Chat(Cryllic)
 	end)
