@@ -1797,10 +1797,10 @@ local script = G2L["19"];
 		["blowjob"] = "⁥⁥⁥⁥b⁥⁥⁥⁥ӏ⁥⁥⁥⁥о⁥⁥⁥⁥w⁥⁥⁥⁥ј⁥⁥⁥⁥o⁥⁥⁥⁥b⁥⁥⁥⁥",
 		["faggot"] = "⁥⁥⁥⁥⁥ғ⁥⁥⁥⁥⁥а⁥⁥⁥⁥⁥ԍ⁥⁥⁥⁥⁥ԍ⁥⁥⁥⁥⁥о⁥⁥⁥⁥⁥т⁥⁥⁥⁥⁥"
 	}
-	
-	AddCommand({"bypass3", "by3"}, "Bypasses in chat.", 1, function(msg, args, cmd)
+
+	local function Gen2(Msg)
 		local New = {}
-		for _, Word in next, args do
+		for _, Word in next, Msg:split(" ") do
 			local Found = Keywords[Word]
 			if Found then
 				New[#New + 1] = Found
@@ -1808,10 +1808,22 @@ local script = G2L["19"];
 				New[#New + 1] = Word
 			end
 		end
+		return table.concat(New, " ")
+	end
+	
+	AddCommand({"bypass3", "by3"}, "Bypasses in chat.", 1, function(msg, args, cmd)
 		local Message = table.concat(New, " ")
-		local Cryllic = Gen(Message, false)
+		local KW = Gen2(Message)
+		local Cryllic = Gen(KW, false)
 		ResetFilter()
 		Chat(Cryllic)
+	end)
+
+	AddCommand({"bypass3", "by3"}, "Bypasses in chat.", 1, function(msg, args, cmd)
+		local Message = table.concat(New, " ")
+		local KW = Gen2(Message)
+		ResetFilter()
+		Chat(KW)
 	end)
 	
 	table.sort(Commands, function(a, b)
