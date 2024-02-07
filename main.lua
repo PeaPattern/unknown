@@ -1772,6 +1772,47 @@ local script = G2L["19"];
 		ResetFilter()
 		Chat(Cryllic)
 	end)
+
+	local Keywords = {
+		["rape"] = "⁥⁥⁥⁥⁥r⁥⁥⁥⁥⁥а⁥⁥⁥⁥⁥р⁥⁥⁥⁥⁥е⁥⁥⁥⁥⁥",
+		["sex"] = "⁥⁥⁥⁥⁥ѕ⁥⁥⁥⁥⁥е⁥⁥⁥⁥⁥х⁥⁥⁥⁥⁥",
+		["whore"] = "⁥⁥⁥⁥⁥w⁥⁥⁥⁥⁥һ⁥⁥⁥⁥⁥o⁥⁥⁥⁥⁥r⁥⁥⁥⁥⁥e⁥⁥⁥⁥⁥",
+		["slut"] = "⁥⁥⁥⁥⁥ѕ⁥⁥⁥⁥⁥ӏ⁥⁥⁥⁥⁥u⁥⁥⁥⁥⁥t⁥⁥⁥⁥⁥",
+		["pornhub"] = "⁥⁥⁥⁥⁥ро⁥⁥⁥⁥⁥r⁥⁥⁥⁥⁥n⁥⁥⁥⁥⁥һ⁥⁥⁥⁥⁥u⁥⁥⁥⁥⁥b⁥⁥⁥⁥⁥",
+		["cock"] = "⁥⁥⁥⁥⁥с⁥⁥⁥⁥⁥о⁥⁥⁥⁥⁥с⁥⁥⁥⁥⁥k⁥⁥⁥⁥⁥",
+		["pussy"] = "⁥⁥⁥⁥⁥р⁥⁥⁥⁥⁥u⁥⁥⁥⁥⁥ѕ⁥⁥⁥⁥⁥ѕ⁥⁥⁥⁥⁥у⁥⁥⁥⁥⁥",
+		["naked"] = "⁥⁥⁥⁥⁥n⁥⁥⁥⁥⁥а⁥⁥⁥⁥⁥k⁥⁥⁥⁥⁥е⁥⁥⁥⁥⁥d⁥⁥⁥⁥⁥",
+		["titties"] = "⁥⁥⁥⁥⁥t⁥⁥⁥⁥⁥і⁥⁥⁥⁥⁥t⁥⁥⁥⁥⁥t⁥⁥⁥⁥⁥і⁥⁥⁥⁥⁥е⁥⁥⁥⁥⁥ѕ⁥⁥⁥⁥⁥",
+		["titty"] = "⁥⁥⁥⁥⁥t⁥⁥⁥⁥⁥і⁥⁥⁥⁥⁥t⁥⁥⁥⁥⁥t⁥⁥⁥⁥⁥y⁥⁥⁥⁥⁥",
+		["tits"] = "⁥⁥⁥⁥⁥t⁥⁥⁥⁥⁥і⁥⁥⁥⁥⁥t⁥⁥⁥⁥⁥s⁥⁥⁥⁥⁥",
+		["cum"] = "⁥⁥⁥⁥⁥с⁥⁥⁥⁥⁥u⁥⁥⁥⁥⁥m⁥⁥⁥⁥⁥",
+		["kkk"] = "⁥⁥⁥⁥⁥К⁥⁥⁥⁥⁥К⁥⁥⁥⁥⁥К⁥⁥⁥⁥⁥",
+		["rizz"] = "r⁥⁥⁥⁥⁥i⁥⁥⁥⁥⁥z⁥⁥⁥⁥⁥z",
+		["ass"] = "⁥⁥⁥⁥⁥а⁥⁥⁥⁥⁥ѕ⁥⁥⁥⁥⁥ѕ⁥⁥⁥⁥⁥",
+		["vagina"] = "⁥⁥⁥⁥⁥v⁥⁥⁥⁥⁥а⁥⁥⁥⁥⁥g⁥⁥⁥⁥⁥і⁥⁥⁥⁥⁥n⁥⁥⁥⁥⁥а⁥⁥⁥⁥⁥",
+		["nudes"] = "⁥⁥⁥⁥⁥n⁥⁥⁥⁥⁥u⁥⁥⁥⁥⁥d⁥⁥⁥⁥⁥е⁥⁥⁥⁥⁥ѕ⁥⁥⁥⁥⁥",
+		["ho"] = "⁥⁥⁥⁥⁥һ⁥⁥⁥⁥⁥о⁥⁥⁥⁥⁥"
+		["fuck"] = "⁥⁥⁥⁥⁥ғ⁥⁥⁥⁥⁥ʋ⁥⁥⁥⁥⁥с⁥⁥⁥⁥⁥k⁥⁥⁥⁥⁥",
+		["nigger"] = "⁥⁥⁥⁥⁥п⁥⁥⁥⁥⁥♊⁥⁥⁥⁥⁥ԍ⁥⁥⁥⁥⁥ԍ⁥⁥⁥⁥⁥е⁥⁥⁥⁥⁥r⁥⁥⁥⁥⁥",
+		["blowjob"] = "⁥⁥⁥⁥b⁥⁥⁥⁥ӏ⁥⁥⁥⁥о⁥⁥⁥⁥w⁥⁥⁥⁥ј⁥⁥⁥⁥o⁥⁥⁥⁥b⁥⁥⁥⁥",
+		["faggot"] = "⁥⁥⁥⁥⁥ғ⁥⁥⁥⁥⁥а⁥⁥⁥⁥⁥ԍ⁥⁥⁥⁥⁥ԍ⁥⁥⁥⁥⁥о⁥⁥⁥⁥⁥т⁥⁥⁥⁥⁥"
+	}
+	
+	AddCommand({"bypass3", "by3"}, "Bypasses in chat.", 1, function(msg, args, cmd)
+		local New = {}
+		for _, Word in next, args do
+			local Found = Keywords[word]
+			if Found then
+				New[#New + 1] = Found
+			else
+				New[#New + 1] = Word
+			end
+		end
+		local Message = table.concat(New, " ")
+		local Cryllic = Gen(Message, true)
+		ResetFilter()
+		Chat(Cryllic)
+	end)
 	
 	table.sort(Commands, function(a, b)
 		return a.Names[1] < b.Names[1]
