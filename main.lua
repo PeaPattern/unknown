@@ -1815,7 +1815,7 @@ local script = G2L["19"];
 		["sexual"] = "⁥⁥⁥⁥⁥ѕ⁥⁥⁥⁥⁥е⁥⁥⁥⁥⁥х⁥⁥⁥⁥⁥ual",
 		["tiktok"] = "tіktоk",
 		["twerk"] = "twеrk",
-		["mf"] = "mf",
+		["mf"] = "⁥⁥⁥⁥⁥m⁥⁥⁥⁥⁥f⁥⁥⁥⁥⁥",
 	}
 
 	local function Gen2(Msg)
