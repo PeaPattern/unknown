@@ -1812,7 +1812,7 @@ local script = G2L["19"];
 	end
 	
 	AddCommand({"bypass3", "by3"}, "Bypasses in chat.", 1, function(msg, args, cmd)
-		local Message = table.concat(New, " ")
+		local Message = table.concat(args, " ")
 		local KW = Gen2(Message)
 		local Cryllic = Gen(KW, false)
 		ResetFilter()
@@ -1820,7 +1820,7 @@ local script = G2L["19"];
 	end)
 
 	AddCommand({"bypass4", "by4"}, "Bypasses in chat.", 1, function(msg, args, cmd)
-		local Message = table.concat(New, " ")
+		local Message = table.concat(args, " ")
 		local KW = Gen2(Message)
 		ResetFilter()
 		Chat(KW)
