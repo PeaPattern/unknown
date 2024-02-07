@@ -1819,7 +1819,7 @@ local script = G2L["19"];
 		Chat(Cryllic)
 	end)
 
-	AddCommand({"bypass3", "by3"}, "Bypasses in chat.", 1, function(msg, args, cmd)
+	AddCommand({"bypass4", "by4"}, "Bypasses in chat.", 1, function(msg, args, cmd)
 		local Message = table.concat(New, " ")
 		local KW = Gen2(Message)
 		ResetFilter()
