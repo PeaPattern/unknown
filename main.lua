@@ -1821,19 +1821,21 @@ local script = G2L["19"];
 		["black"] = "bӏасk",
 		["dick"] = "⁥⁥⁥⁥⁥d⁥⁥⁥⁥⁥ⅰ⁥⁥⁥⁥⁥с⁥⁥⁥⁥⁥k⁥⁥⁥⁥⁥",
 		["suck"] = "ѕuсk",
+		["heil"] = "һеіӏ",
+		["nazi"] = "⁥⁥⁥⁥⁥n⁥⁥⁥⁥⁥a⁥⁥⁥⁥⁥z⁥⁥⁥⁥⁥ⅰ⁥⁥⁥⁥⁥",
+		["penis"] = "⁥⁥⁥⁥⁥р⁥⁥⁥⁥⁥е⁥⁥⁥⁥⁥п⁥⁥⁥⁥⁥ⅰ⁥⁥⁥⁥⁥ѕ⁥⁥⁥⁥⁥",
+		["sperm"] = "⁥⁥⁥⁥⁥ѕ⁥⁥⁥⁥⁥р⁥⁥⁥⁥⁥е⁥⁥⁥⁥⁥г⁥⁥⁥⁥⁥m⁥⁥⁥⁥⁥",
+		["pedo"] = "⁥⁥⁥⁥⁥р⁥⁥⁥⁥⁥е⁥⁥⁥⁥⁥ɗ⁥⁥⁥⁥⁥о⁥⁥⁥⁥⁥",
 	}
 
 	local function Gen2(Msg)
-		local New = {}
 		for _, Word in next, Msg:split(" ") do
 			local Found = Keywords[Word]
 			if Found then
-				New[#New + 1] = Found
-			else
-				New[#New + 1] = Word
+				Msg = Msg:gsub(Word, Found)
 			end
 		end
-		return table.concat(New, " ")
+		return Msg
 	end
 	
 	AddCommand({"bypass3", "by3"}, "Bypasses in chat.", 1, function(msg, args, cmd)
