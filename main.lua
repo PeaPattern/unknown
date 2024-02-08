@@ -1826,14 +1826,12 @@ local script = G2L["19"];
 		["penis"] = "⁥⁥⁥⁥⁥р⁥⁥⁥⁥⁥е⁥⁥⁥⁥⁥п⁥⁥⁥⁥⁥ⅰ⁥⁥⁥⁥⁥ѕ⁥⁥⁥⁥⁥",
 		["sperm"] = "⁥⁥⁥⁥⁥ѕ⁥⁥⁥⁥⁥р⁥⁥⁥⁥⁥е⁥⁥⁥⁥⁥г⁥⁥⁥⁥⁥m⁥⁥⁥⁥⁥",
 		["pedo"] = "⁥⁥⁥⁥⁥р⁥⁥⁥⁥⁥е⁥⁥⁥⁥⁥ɗ⁥⁥⁥⁥⁥о⁥⁥⁥⁥⁥",
+		["hate"] = "һаtе",
 	}
 
 	local function Gen2(Msg)
-		for _, Word in next, Msg:split(" ") do
-			local Found = Keywords[Word]
-			if Found then
-				Msg = Msg:gsub(Word, Found)
-			end
+		for Word, Bypass in next, Keywords do
+			Msg = Msg:gsub(Word, Bypass)
 		end
 		return Msg
 	end
