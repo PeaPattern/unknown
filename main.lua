@@ -408,7 +408,7 @@ local script = G2L["19"];
 	
 	local Config = {
 		Seperator = " ",
-		CommandBarHotkey = Enum.KeyCode.Quote,
+		CommandBarHotkey = Enum.KeyCode.RightShift,
 		Killcam = true
 	}
 	
