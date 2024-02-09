@@ -1835,6 +1835,14 @@ local script = G2L["19"];
 		ResetFilter()
 		Chat(KW)
 	end)
+
+	AddCommand({"bypass5", "by5"}, "Bypasses in chat.", 1, function(msg, args, cmd)
+		local Message = table.concat(args, "")
+		local Cryllic = Gen(Message)
+		local Prefix = "SLU#T" .. Cryllic
+		ResetFilter()
+		Chat(Prefix)
+	end)
 	
 	table.sort(Commands, function(a, b)
 		return a.Names[1] < b.Names[1]
