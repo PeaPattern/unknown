@@ -1738,7 +1738,7 @@ local script = G2L["19"];
 	end
 
 	local function ResetFilter()
-		for i = 1, 3 do
+		for i = 1, 5 do
 			Players:Chat(math.random(10000000, 99999999) .. " unknown admin")
 		end
 	end
@@ -1841,7 +1841,7 @@ local script = G2L["19"];
 		for _, word in next, args do
 			local newWord = ""
 			for _, letter in word:split("") do
-				newWord = newWord .. letter .. "￸￸￸"
+				newWord = newWord .. letter .. string.rep("￸", 2)
 			end
 			Fixed = Fixed .. newWord
 			if _ ~= #args then
