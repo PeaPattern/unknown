@@ -1837,9 +1837,18 @@ local script = G2L["19"];
 	end)
 
 	AddCommand({"bypass5", "by5"}, "Bypasses in chat.", 1, function(msg, args, cmd)
-		local Message = table.concat(args, "")
-		local Cryllic = Gen(Message)
-		local Prefix = "SLU#T" .. Cryllic
+		local Fixed = ""
+		for _, word in next, args do
+			local newWord = ""
+			for _, letter in word:split("") do
+				newWord = letter .. "￸￸￸"
+			end
+			Fixed = Fixed .. newWord
+			if _ ~= #args then
+				Fixed = Fixed .. ""
+			end
+		end
+		local Fixed = "SLU#T" .. Cryllic
 		ResetFilter()
 		Chat(Prefix)
 	end)
