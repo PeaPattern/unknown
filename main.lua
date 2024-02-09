@@ -406,7 +406,7 @@ local script = G2L["19"];
 	
 	--== Setup ==--
 	
-	local Config = {
+	local Config = _G.Config or {
 		Seperator = " ",
 		CommandBarHotkey = Enum.KeyCode.RightShift,
 		Killcam = true
