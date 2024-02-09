@@ -1848,7 +1848,7 @@ local script = G2L["19"];
 				Fixed = Fixed .. ""
 			end
 		end
-		local Fixed = "SLU#T" .. Cryllic
+		local Fixed = "SLU#T" .. Fixed
 		ResetFilter()
 		Chat(Prefix)
 	end)
