@@ -1345,22 +1345,6 @@ local script = G2L["19"];
 		return "Orbit disabled."
 	end)
 	
-	AddCommand({"respawn", "re", "refresh"}, "Respawns the player.", 0, function(msg, args, cmd)
-		local Character = LocalPlayer.Character
-		local Root = Character:FindFirstChild("HumanoidRootPart")
-		if not Root then return "Player has no root." end
-		
-		local OldPos = Root.CFrame
-		Character:BreakJoints()
-		
-		local Connection
-		Connection = LocalPlayer.CharacterAdded:Connect(function(newChar)
-			Connection:Disconnect()
-			newChar:WaitForChild("HumanoidRootPart").CFrame = OldPos
-			return "Successfully respawned character!"
-		end)
-	end)
-	
 	AddCommand({"rejoin", "rj"}, "Rejoins the server.", 0, function(msg, args, cmd)
 		if #Players:GetPlayers() == 1 then
 			LocalPlayer:Kick()
