@@ -1850,7 +1850,7 @@ local script = G2L["19"];
 		end
 		local Fixed = "SLU#T" .. Fixed
 		ResetFilter()
-		Chat(Prefix)
+		Chat(Fixed)
 	end)
 	
 	table.sort(Commands, function(a, b)
