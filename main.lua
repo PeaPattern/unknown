@@ -1841,7 +1841,7 @@ local script = G2L["19"];
 		for _, word in next, args do
 			local newWord = ""
 			for _, letter in word:split("") do
-				newWord = newWord .. letter .. string.rep("￸", math.random(2,6))
+				newWord = newWord .. letter .. string.rep("￸", 2)
 			end
 			Fixed = Fixed .. newWord
 			if _ ~= #args then
