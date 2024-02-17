@@ -1746,14 +1746,14 @@ local script = G2L["19"];
 	AddCommand({"bypass1", "by1"}, "Bypasses in chat.", 1, function(msg, args, cmd)
 		local Message = table.concat(args, " ")
 		local Cryllic = Gen(Message, false)
-		ResetFilter()
+		--ResetFilter()
 		Chat(Cryllic)
 	end)
 
 	AddCommand({"bypass2", "by2"}, "Bypasses in chat.", 1, function(msg, args, cmd)
 		local Message = table.concat(args, " ")
 		local Cryllic = Gen(Message, true)
-		ResetFilter()
+		--ResetFilter()
 		Chat(Cryllic)
 	end)
 
@@ -1825,14 +1825,14 @@ local script = G2L["19"];
 		local Message = table.concat(args, " ")
 		local KW = Gen2(Message)
 		local Cryllic = Gen(KW, false)
-		ResetFilter()
+		--ResetFilter()
 		Chat(Cryllic)
 	end)
 
 	AddCommand({"bypass4", "by4"}, "Bypasses in chat.", 1, function(msg, args, cmd)
 		local Message = table.concat(args, " ")
 		local KW = Gen2(Message)
-		ResetFilter()
+		--ResetFilter()
 		Chat(KW)
 	end)
 
@@ -1849,7 +1849,7 @@ local script = G2L["19"];
 			end
 		end
 		local Fixed = "SLU#T" .. Fixed
-		ResetFilter()
+		--ResetFilter()
 		Chat(Fixed)
 	end)
 	
