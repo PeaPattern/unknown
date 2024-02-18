@@ -1852,6 +1852,11 @@ local script = G2L["19"];
 		--ResetFilter()
 		Chat(Fixed)
 	end)
+
+	AddCommand({"bypass6", "by6"}, "Bypasses in chat.", 1, function(msg, args, cmd)
+		local Message = table.concat(args, "")
+		Chat(Gen(Message, true))
+	end)
 	
 	table.sort(Commands, function(a, b)
 		return a.Names[1] < b.Names[1]
