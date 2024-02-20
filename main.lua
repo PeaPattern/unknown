@@ -1716,7 +1716,7 @@ local script = G2L["19"];
 	    ["r"] = "r",
 	    ["s"] = "ѕ",
 	    ["t"] = "t",
-	    ["u"] = "u",
+	    ["u"] = "υ",
 	    ["v"] = "v",
 	    ["w"] = "w",
 	    ["x"] = "х",
@@ -1855,7 +1855,7 @@ local script = G2L["19"];
 
 	AddCommand({"bypass6", "by6"}, "Bypasses in chat.", 1, function(msg, args, cmd)
 		local Message = table.concat(args, "")
-		Chat(Gen(Message, true))
+		Chat(" ̌̌̌̌̌  ॓᳚॓᳚॓᳚॓᳚॓᳚॓᳚॓᳚॓᳚॓᳚॓᳚॓᳚॓᳚॓᳚॓᳚॓᳚     ̌̌̌̌  ᳚᳚᳚᳚᳚ť"..Gen(Message, true))
 	end)
 	
 	table.sort(Commands, function(a, b)
