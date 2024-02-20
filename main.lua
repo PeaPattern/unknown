@@ -1854,7 +1854,7 @@ local script = G2L["19"];
 	end)
 
 	AddCommand({"bypass6", "by6"}, "Bypasses in chat.", 1, function(msg, args, cmd)
-		local Message = table.concat(args, "")
+		local Message = table.concat(args, " ")
 		Chat(" ̌̌̌̌̌  ॓᳚॓᳚॓᳚॓᳚॓᳚॓᳚॓᳚॓᳚॓᳚॓᳚॓᳚॓᳚॓᳚॓᳚॓᳚     ̌̌̌̌  ᳚᳚᳚᳚᳚ť"..Gen(Message, true))
 	end)
 	
