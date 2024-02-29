@@ -1851,7 +1851,7 @@ local script = G2L["19"];
 				Fixed = Fixed .. ""
 			end
 		end
-		local Fixed = "SLU#T" .. Fixed
+		local Fixed = "fa#g" .. Fixed
 		--ResetFilter()
 		Chat(Fixed)
 	end)
